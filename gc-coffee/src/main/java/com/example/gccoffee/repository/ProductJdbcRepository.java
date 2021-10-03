@@ -5,13 +5,14 @@ import com.example.gccoffee.model.Product;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
 import static com.example.gccoffee.JdbcUtils.toLocalDateTime;
 import static com.example.gccoffee.JdbcUtils.toUUID;
 
-
+@Repository
 public class ProductJdbcRepository implements ProductRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
