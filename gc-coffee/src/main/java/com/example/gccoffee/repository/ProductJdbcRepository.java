@@ -2,6 +2,7 @@ package com.example.gccoffee.repository;
 
 import com.example.gccoffee.model.Category;
 import com.example.gccoffee.model.Product;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -41,17 +42,35 @@ public class ProductJdbcRepository implements ProductRepository {
 
     @Override
     public Optional<Product> findById(UUID productId) {
-        return Optional.empty();
+        try {
+            return Optional.ofNullable(
+                    jdbcTemplate.queryForObject("SELECT * FROM products WHERE product_id = UUID_TO_BIN(:productId)",
+                            Collections.singletonMap("productId", productId.toString().getBytes()), productRowMapper)
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public Optional<Product> findByName(String productName) {
-        return Optional.empty();
+        try {
+            return Optional.ofNullable(
+                    jdbcTemplate.queryForObject("SELECT * FROM products WHERE product_name = :productName",
+                            Collections.singletonMap("productName", productName), productRowMapper)
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public List<Product> findByCategory(Category category) {
-        return null;
+        return jdbcTemplate.query(
+                "SELECT * FROM products WHERE category = :category",
+                Collections.singletonMap("category", category.toString()),
+                productRowMapper
+        );
     }
 
     @Override
